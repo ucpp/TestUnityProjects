@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace RopeSystem
 {
-	public class FishingRope : Rope
+	public class Rope : RopeBase
 	{
 		public override Rigidbody2D Head
 		{
@@ -17,15 +17,15 @@ namespace RopeSystem
 			protected set { _tail = value; }
 		}
 
-		private Stack<RopePart> _stack = new Stack<RopePart>();
+		private Stack<RopePartBase> _stack = new Stack<RopePartBase>();
 		private Rigidbody2D _head = null;
 		private Rigidbody2D _tail = null;
-		private RopePart _partEtalon = null;
+		private RopePartBase _partEtalon = null;
 
 		private readonly string pathToRopePart = "Prefabs/simplePart";
 		private readonly string pathToBobber = "Prefabs/bobber";
 
-		public FishingRope(Rigidbody2D head)
+		public Rope(Rigidbody2D head)
 		{
 			_head = head;
 			Initialize();
@@ -37,7 +37,7 @@ namespace RopeSystem
 			_partEtalon = new SimplePart();
 			_partEtalon.Object = Resources.Load(pathToRopePart) as GameObject;
 
-			RopePart bobber = new Bobber();
+			RopePartBase bobber = new Bobber();
 			bobber.Object = Resources.Load(pathToBobber) as GameObject;
 
 			InitializeTail(bobber);
@@ -55,7 +55,7 @@ namespace RopeSystem
 				return;
 			if (_stack.Count <= 2)
 				return;
-			RopePart part = _stack.Peek();
+			RopePartBase part = _stack.Peek();
 			part.Destroy();
 			_stack.Pop();
 			_stack.Peek().Joint.connectedBody = Head;
@@ -71,7 +71,7 @@ namespace RopeSystem
 			Vector2[] points = new Vector2[_stack.Count + 1];
 			points[0] = Head.position;
 			int i = 1;
-			foreach (RopePart part in _stack)
+			foreach (RopePartBase part in _stack)
 			{
 				points[i] = part.Object.transform.position;
 				i++;
@@ -82,19 +82,19 @@ namespace RopeSystem
 		/// <summary>
 		/// добавление частей веревки путем инстанцирования(!) объектов
 		/// </summary>
-		private void Push(RopePart part)
+		private void Push(RopePartBase part)
 		{
-			RopePart newPart = part.Clone();
+			RopePartBase newPart = part.Clone();
 			if (_stack.Count > 0)
 			{
-				RopePart prevPart = _stack.Peek();
+				RopePartBase prevPart = _stack.Peek();
 				prevPart.Joint.connectedBody = newPart.PhisycsBody;
 			}
 			_stack.Push(newPart);
 			newPart.Joint.connectedBody = Head;
 		}
 
-		private void InitializeTail(RopePart tail)
+		private void InitializeTail(RopePartBase tail)
 		{
 			Push(tail);
 			_tail = _stack.Peek().PhisycsBody;

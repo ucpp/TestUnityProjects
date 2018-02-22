@@ -11,14 +11,14 @@ namespace RopeSystem
 		/// </summary>
 		public Transform RodGameObject;
 
-		private Rope _rope = null;
+		private RopeBase _rope = null;
 		private RopeController _ropeController = null;
 		private RopeDrawer _ropeDrawer = null;
 
 		public void Initialize()
 		{
 			Rigidbody2D rodRigidbody = RodGameObject.GetComponent<Rigidbody2D>();
-			_rope = new FishingRope(rodRigidbody);
+			_rope = new Rope(rodRigidbody);
 			_ropeController = new RopeController(_rope);
 			_ropeDrawer = new RopeDrawer();
 		}

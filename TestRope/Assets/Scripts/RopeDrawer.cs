@@ -56,7 +56,7 @@ namespace RopeSystem
 			_lineRenderer.endWidth = _lineWidth;
 		}
 
-		public void Draw(Rope rope)
+		public void Draw(RopeBase rope)
 		{
 			DrawCurve(rope.GetPoints());
 		}
